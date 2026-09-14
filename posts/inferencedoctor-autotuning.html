@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#07100e" />
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>InferenceDoctor: autotuning LLM serving configs, verified | Sri Gorantla</title>
+<style>
+    :root{
+      --ink:#07100e; --ink-2:#0b1714; --panel:#10211c; --line:#274139;
+      --paper:#eef5ef; --muted:#a9b9b0; --lime:#b9f46a; --cyan:#63d8e8;
+      --max:1180px; --pad:clamp(20px,5vw,76px);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:84px}
+    body{margin:0;background:var(--ink);color:var(--paper);font-family:Manrope,system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.055;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E")}
+    a{color:inherit;text-decoration:none} button{font:inherit;color:inherit}
+    .skip{position:fixed;left:16px;top:16px;z-index:100;background:var(--lime);color:#08100e;padding:10px 14px;border-radius:4px;opacity:0;pointer-events:none;transform:translateY(-140%)}.skip:focus{opacity:1;pointer-events:auto;transform:none}
+    .wrap{width:min(var(--max),calc(100% - var(--pad)*2));margin-inline:auto}
+    .mono{font-family:"IBM Plex Mono",monospace;letter-spacing:.03em}
+    .nav{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:15;display:flex;align-items:center;gap:5px;padding:6px;background:rgba(7,16,14,.84);border:1px solid rgba(185,244,106,.16);border-radius:999px;backdrop-filter:blur(14px);box-shadow:0 18px 50px rgba(0,0,0,.35)}
+    .nav a{font:500 11px/1 "IBM Plex Mono",monospace;color:var(--muted);padding:10px 13px;border-radius:999px;transition:.2s}
+    .nav a:hover,.nav a.active{background:#172920;color:var(--lime)}
+    .nav .mail{background:var(--lime);color:#07100e;font-weight:600}
+    .eyebrow{font:500 11px/1.4 "IBM Plex Mono",monospace;color:var(--lime)}
+    section{padding:clamp(88px,11vw,150px) 0;border-bottom:1px solid var(--line)}
+    .prose{max-width:760px}
+    .prose p{margin:0 0 1.4em;color:#dfe8e2;font-size:17px;line-height:1.75}
+    .prose h2{font-size:clamp(24px,3vw,34px);margin:2.2em 0 .7em;letter-spacing:-.03em}
+    .prose ul{color:#dfe8e2;line-height:1.75;margin:0 0 1.4em;padding-left:1.3em}
+    .prose li{margin-bottom:.5em}
+    .prose strong{color:var(--paper)}
+    .prose code{font-family:"IBM Plex Mono",monospace;background:#0b1714;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:.88em;color:var(--lime)}
+    .prose a{color:var(--lime);text-decoration:underline;text-underline-offset:3px}
+    .back{display:inline-block;margin-bottom:34px;font:500 12px/1.4 "IBM Plex Mono",monospace;color:var(--lime);text-decoration:none;letter-spacing:.06em}
+    .back:hover{text-decoration:underline}
+    .draft-banner{background:#2a1e0c;border:1px solid #6b4d1f;color:#f2c979;border-radius:10px;padding:14px 20px;font-size:14px;margin-bottom:36px}
+    .post-hero-meta{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin:18px 0 44px}
+    .tagrow{display:flex;flex-wrap:wrap;gap:8px}
+    .tag{font:500 10px/1.4 "IBM Plex Mono",monospace;color:var(--cyan);border:1px solid var(--line);border-radius:999px;padding:5px 12px;letter-spacing:.06em}
+    .date{font:500 11px/1.4 "IBM Plex Mono",monospace;color:var(--muted);letter-spacing:.08em}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+<nav class="nav" aria-label="Page sections">
+    <a href="../index.html">Home</a><a href="../index.html#about">About</a><a href="../index.html#expertise">Expertise</a><a href="../index.html#work">Work</a><a href="../index.html#career">Career</a><a href="../blogs/" class="active" aria-current="page">Writing</a><a class="mail" href="../index.html#contact">Contact</a>
+  </nav>
+  <main id="main">
+    <section>
+      <div class="wrap">
+        <a class="back" href="../blogs/">&larr; ALL POSTS</a>
+        
+        <div class="eyebrow">OPEN SOURCE</div>
+        <h1 style="font-size:clamp(40px,6vw,76px);line-height:.95;letter-spacing:-.06em;margin:14px 0 0;max-width:900px;font-weight:800">InferenceDoctor: autotuning LLM serving configs, verified</h1>
+        <div class="post-hero-meta">
+          <span class="date">SEPTEMBER 2026</span>
+          <div class="tagrow"><span class="tag">LLM INFERENCE</span><span class="tag">AUTOTUNING</span><span class="tag">MLOPS</span></div>
+        </div>
+        <div class="prose">
+          <p>Your GPUs are slow and expensive, and the fix is usually a config change nobody tried. Tensor parallelism, max batch size, sequence length: these get set once from vendor defaults or by one heroic engineer, and then every model change silently invalidates the tuning. I built <a href="https://github.com/sriranga13/inferencedoctor">InferenceDoctor</a> to make this systematic, and I just open-sourced the whole thing, history and all.</p>
+
+          <h2>v0.1: see what's slow</h2>
+          <p>The first version only diagnoses. A benchmark CLI talks to any OpenAI-compatible endpoint (vLLM, TensorRT-LLM) and measures p50/p95 end-to-end latency, aggregate output tokens per second, and dollars per million output tokens when you supply a GPU hourly cost. It writes a portable JSON report, and a client-side Next.js dashboard renders it. No backend, no uploads, API keys never touch the report. This part is Apache-2.0 and always was.</p>
+
+          <h2>v0.2: stop guessing, start searching</h2>
+          <p>Diagnosis tells you where you are, not where to go. v0.2 added an experimental autotuning engine behind the CLI's planning API: it fingerprints your workload from numeric traces (input, output, and arrival distribution summaries), screens candidate configs with a conservative memory model, fits Gaussian-process surrogates in log units for latency, throughput, and error, and spends a fixed trial budget using expected improvement plus uncertainty. Then comes the part I cared about most: reserved verification trials run the winning config on fresh data, and if verification fails, the engine withholds the recommendation and rolls back instead of blessing a regression. Every trial lands in a hash-chained SQLite ledger, so the record of what was tried is tamper-evident.</p>
+
+          <h2>v0.3: spend the budget where you were wrong</h2>
+          <p>Before building further, I tore down six prior-art systems at the mechanism level: AIConfigurator, SLO-Guard, TUNA, CherryPick, Triton Model Analyzer, and BurstGPT. That teardown verified seven capabilities none of them provide, and v0.3 rebuilds the search thesis around those gaps. The core bet: <strong>verification residuals are the scarce signal</strong>. Prediction errors from held-out verification trials steer where the next experiment goes, weighted toward regions near the Pareto frontier, with verification residuals carrying double weight. A dollar value-of-information stop rule halts the search when the next experiment's expected saving drops below its cost (verification of the current best still runs). And the surrogate finally conditions on the workload itself, through a configuration-by-workload product kernel, instead of a fingerprint that never influenced a decision.</p>
+
+          <h2>What it is not</h2>
+          <p>Honest scope matters more than a demo. All evidence so far is simulated: invented configurations, fictional accelerators, synthetic measurements. There is no hardware validation yet, no H100 numbers, no claim of beating anything on real silicon. The prior-art field is crowded, and I make no novelty or patentability claim; no patent has been filed. The repo history shows the full arc, v0.1 through v0.3, including the teardown notes, so you can see exactly what was tried and what remains unproven.</p>
+
+          <h2>What's next</h2>
+          <p>The next milestone is a reproducible real-staging experiment on one small model, followed by an independent workload and hardware holdout. If you serve LLMs on your own GPUs, the most useful thing you can give me is skepticism: what would make this trustworthy enough to try? The repo is at <a href="https://github.com/sriranga13/inferencedoctor">github.com/sriranga13/inferencedoctor</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
