@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <title>Counting thrips: when your dataset is a wriggling crowd — Sri Gorantla</title>
+  <title>Building Genie: an enterprise GenAI platform for regulated R&D — Sri Gorantla [DRAFT]</title>
 <style>
     :root{
       --ink:#07100e; --ink-2:#0b1714; --panel:#10211c; --line:#274139;
@@ -143,50 +143,39 @@
 <body>
   <a class="skip" href="#main">Skip to content</a>
 <nav class="nav" aria-label="Page sections">
-    <a href="../index.html">Home</a><a href="../index.html#about">About</a><a href="../index.html#expertise">Expertise</a><a href="../index.html#work">Work</a><a href="../index.html#career">Career</a><a href="../blogs/" class="active" aria-current="page">Writing</a><a class="mail" href="../index.html#contact">Contact</a>
+    <a href="index.html">Home</a><a href="index.html#about">About</a><a href="index.html#expertise">Expertise</a><a href="index.html#work">Work</a><a href="index.html#career">Career</a><a href="blog.html" class="active" aria-current="page">Writing</a><a class="mail" href="index.html#contact">Contact</a>
   </nav>
   <main id="main">
     <section>
       <div class="wrap">
-        <a class="back" href="../blogs/">&larr; ALL POSTS</a>
-        <div class="eyebrow">COMPUTER VISION</div>
-        <h1 style="font-size:clamp(40px,6vw,76px);line-height:.95;letter-spacing:-.06em;margin:14px 0 0;max-width:900px;font-weight:800">Counting thrips: when your dataset is a wriggling crowd</h1>
+        <a class="back" href="../../blogs/">&larr; ALL POSTS</a>
+        <div class="draft-banner"><strong>DRAFT — pending Sri's approval.</strong> Not linked from the blog index. Do not publish as-is.</div>
+        <div class="eyebrow">ENTERPRISE GENAI</div>
+        <h1 style="font-size:clamp(40px,6vw,76px);line-height:.95;letter-spacing:-.06em;margin:14px 0 0;max-width:900px;font-weight:800">Building Genie: an enterprise GenAI platform for regulated R&D</h1>
         <div class="post-hero-meta">
-          <span class="date" style="font:500 11px/1.4 'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.08em">SEPTEMBER 2026</span>
-          <div class="tagrow"><span class="tag">OBJECT DETECTION</span><span class="tag">FINE-GRAINED CLASSIFICATION</span><span class="tag">AZURE CONTAINER APPS</span><span class="tag">NVIDIA TRITON</span><span class="tag">MLOPS</span><span class="tag">AGRICULTURE</span></div>
+          <span class="date" style="font:500 11px/1.4 'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.08em">DRAFT — DATE ON PUBLISH</span>
+          <div class="tagrow"><span class="tag">GENAI</span><span class="tag">RAG</span><span class="tag">MCP</span><span class="tag">LIBRECHAT</span><span class="tag">PROMPT ENGINEERING</span></div>
         </div>
         <div class="prose">
-<p>One petri dish, uploaded as a single image, holding hundreds of thrips — some larvae, some adults, all of them millimeters long and most of them overlapping. The task: count every single one, and tell the life stages apart. Manual counting at that density is slow, error-prone, and nobody's favorite job. So we built an ML model to do it. Counting insects turns out to be one of the most honest tests of an object-detection system, because the data offers nowhere to hide.</p>
-<h2>Why this is hard</h2>
-<p>Thrips are tiny, and a dish doesn't arrange them politely. They cluster, they pile on top of each other, and they orient every which way. That breaks the assumptions most detection demos quietly rely on: well-separated objects, consistent scale, clean backgrounds.</p>
-<p>Then there's the classification problem. Larvae and adults differ in size — but it's a continuum, not two neat piles. A large larva and a small adult can look frustratingly similar, and apparent size shifts with posture and orientation. So the model has to find near-invisible objects <em>and</em> make a fine-grained call on each one.</p>
-<p>And the annotation cost is brutal. Every training label is a human clicking on a nearly invisible insect — hundreds or thousands of clicks per image, each one requiring judgment about life stage. Dataset creation was a significant fraction of the total project effort, not a prelude to it.</p>
-<h2>Counting is detection in disguise</h2>
-<p>The key architectural decision: don't build a counter. Build a <strong>detector plus classifier</strong> — find every thrips as an instance, classify each as larval or adult, and let the counts fall out by summation. A separate counting head would just be a worse detector with extra steps.</p>
-<p>This framing also handles the density problem head-on. In a crowded dish, the failure mode isn't missing the concept of a thrips — it's double-counting one insect or merging two into one. Non-maximum suppression tuning and overlap-aware evaluation matter more here than they do in sparse scenes. We evaluated on dense, real dishes, not the easy sparse ones, because the sparse ones were never the job.</p>
-<h2>What made it work</h2>
+<p>Scientists at a biotech company sit on top of a goldmine: years of experimental data, regulatory filings, QC records, and process knowledge spread across databases that only a handful of specialists know how to query. Everyone else files a ticket, waits, and eventually makes a decision with half the picture. I kept running into this wall, so we built something to tear it down: <strong>Genie</strong>, an enterprise GenAI platform that lets regulatory, QC, and R&amp;D teams ask questions in plain English and get answers grounded in the company's own scientific databases.</p>
+<p>This post is about what it actually took to build that — and why the hard parts had almost nothing to do with the language model.</p>
+<h2>The problem with "just ask the chatbot"</h2>
+<p>In a regulated environment, a fluent wrong answer is worse than no answer. A scientist asking about a formulation's stability history or a regulatory colleague pulling submission-relevant data cannot afford a hallucination dressed up as confidence. So the central design decision for Genie was this: <strong>the LLM is the interface, not the source of truth</strong>. Every answer has to be traceable back to a query against a real database, and the user needs to see that provenance.</p>
+<p>That framing shaped everything downstream. We weren't building a chatbot with a database plugged in; we were building a natural-language query layer over scientific data, where the model translates intent into structured retrieval and then synthesizes — never invents.</p>
+<h2>Grounding answers in scientific databases</h2>
+<p>The backbone is retrieval over the company's scientific databases: experimental results, batch and formulation records, QC data, and regulatory documentation. Natural-language querying sounds magical until you watch a model try to join three domain tables it has never seen. Getting this right meant careful work on schema description, giving the model an accurate map of what lives where, and constraining it to generate queries against that map rather than freelancing.</p>
+<p>Prompt engineering turned out to be genuine engineering here, not vibes. We iterated on system prompts the way you'd iterate on code: versioned, tested against a set of representative questions, and reviewed when answers drifted. The prompts encode domain rules — which sources to prefer, how to say "I don't know" instead of guessing, and how to present uncertainty. In a regulated setting, a well-engineered refusal is a feature.</p>
+<h2>MCP servers: giving the model hands, not just eyes</h2>
+<p>Retrieval covers "what does the data say," but R&amp;D workflows need actions: look up a manufacturing record, check a formulation's component history, pull discovery-stage assay context. That's where <strong>MCP servers</strong> came in. We built MCP servers for manufacturing, formulations, and discovery — each exposing a curated set of tools the model can call — and surfaced them through <strong>LibreChat</strong> as the conversational front end.</p>
+<p>I like the MCP approach for a practical reason: it draws a clean boundary. The model reasons in language; the tools execute deterministic operations against systems of record. The tool definitions become a contract you can validate, version, and audit — which matters enormously when quality and regulatory teams ask "exactly what did the system touch to produce this answer?" LibreChat gave us an open, extensible chat interface without building a whole frontend framework from scratch, so the team could focus on the tools and the grounding instead of UI plumbing.</p>
+<h2>What I'd tell anyone building this</h2>
 <ul>
-<li><strong>Annotation protocol first.</strong> Clear, written rules for ambiguous cases (larva or small adult?), applied consistently by every annotator. Inconsistent labels at this scale don't average out — they become the model's confusion.</li>
-<li><strong>Respecting class imbalance.</strong> Larval-to-adult ratios vary dish to dish. The evaluation had to cover the full range, not just the balanced middle.</li>
-<li><strong>Density-stratified evaluation.</strong> We measured performance separately on sparse, medium, and packed dishes. Aggregate metrics hide exactly the regime you care about.</li>
+<li><strong>Start with the refusal.</strong> Design how the system says "I can't answer that from available data" before you design anything else. In regulated R&amp;D, trust is the product.</li>
+<li><strong>Treat prompts like code.</strong> Version them, test them, review them. Prompt drift is real and silent.</li>
+<li><strong>Keep humans in the loop where it counts.</strong> Genie accelerates research and QC investigation; it doesn't sign off on anything. That boundary should be explicit in the product, not just the documentation.</li>
+<li><strong>Tools beat context.</strong> An MCP tool that runs the right query will outperform a giant context window stuffed with hopefully-relevant documents, every time.</li>
 </ul>
-<h2>Under the hood</h2>
-<p>The stack here is less glamorous than the fungal pipeline — no foundation-model shortcut, just detection done carefully:</p>
-<ul>
-<li><strong>Detection → per-instance object detection.</strong> The model outputs a bounding box (or mask) per thrips, each with a larval/adult classification. Counts are derived by summation, never predicted directly. At millimeter scale, small-object detection lives or dies on anchor/proposal density and input resolution — downsampling for speed is how you lose half your insects.</li>
-<li><strong>Classification → fine-grained head.</strong> Larval vs adult is a fine-grained problem: high intra-class variation (posture, orientation) and low inter-class separation (large larva vs small adult). The classifier needs the per-instance crop at full resolution, not the downscaled dish.</li>
-<li><strong>Evaluation → density-stratified.</strong> Standard mAP over the whole set hides the regime that matters, so we slice metrics by crowd density. A model that's 95% on sparse dishes and 70% on packed ones is a 70% model for all practical purposes.</li>
-<li><strong>Serving → containers, with Triton evaluated.</strong> Inference ran containerized on <strong>Azure Container Apps</strong> under the same MLOps discipline as the fungal pipeline — versioned models, reproducible runs, monitored predictions. We also tested <strong>NVIDIA Triton Inference Server</strong> for serving efficiency: dense dishes mean many instances per image, and batching that workload efficiently is a throughput problem as much as an accuracy one.</li>
-</ul>
-<p>The unglamorous hero of this project wasn't a model at all — it was the <strong>annotation protocol</strong>: written rules for ambiguous life-stage calls, applied consistently across thousands of clicks. At this object scale, label consistency <em>is</em> model architecture.</p>
-<h2>Practical lessons</h2>
-<ul>
-<li><strong>If you need counts, detect instances.</strong> Counting falls out of good detection; the reverse isn't true.</li>
-<li><strong>Annotate the hard cases deliberately.</strong> Overlapping clusters and borderline life stages are the dataset, not the exception.</li>
-<li><strong>Small objects punish sloppy evaluation.</strong> A few pixels of box jitter is noise on a car and catastrophic on a thrips — pick metrics that reflect the object's scale.</li>
-<li><strong>Life-stage classification is fine-grained recognition wearing a counting costume.</strong> Treat it with the care fine-grained problems demand: consistent labels, per-class metrics, and skepticism toward aggregate accuracy.</li>
-</ul>
-<p>The thrips counter never got the headline numbers the fungal pipeline did, but it may be the more instructive project: no foundation-model shortcut, no clean staging to hide behind — just dense, tiny, ambiguous objects and the unglamorous work of labeling them well enough for a model to learn. Some problems you solve with leverage. This one you solve with care.</p>
+<p>Genie changed how quickly teams at Greenlight could go from question to evidence. The lesson I keep coming back to: enterprise GenAI in a regulated industry isn't a model problem, it's a <em>trust architecture</em> problem — provenance, boundaries, and honest uncertainty, with the LLM as the friendly face on top of rigorous machinery.</p>
         </div>
       </div>
     </section>
