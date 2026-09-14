@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#07100e" />
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Converse, confirm, create: a GenAI POC for LabVantage master data at Corteva — Sri Gorantla</title>
+<style>
+    :root{
+      --ink:#07100e; --ink-2:#0b1714; --panel:#10211c; --line:#274139;
+      --paper:#eef5ef; --muted:#a9b9b0; --lime:#b9f46a; --cyan:#63d8e8;
+      --max:1180px; --pad:clamp(20px,5vw,76px);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:84px}
+    body{margin:0;background:var(--ink);color:var(--paper);font-family:Manrope,system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.055;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E")}
+    a{color:inherit;text-decoration:none} button{font:inherit;color:inherit}
+    .skip{position:fixed;left:16px;top:16px;z-index:100;background:var(--lime);color:#08100e;padding:10px 14px;border-radius:4px;opacity:0;pointer-events:none;transform:translateY(-140%)}.skip:focus{opacity:1;pointer-events:auto;transform:none}
+    .wrap{width:min(var(--max),calc(100% - var(--pad)*2));margin-inline:auto}
+    .mono{font-family:"IBM Plex Mono",monospace;letter-spacing:.03em}
+    .nav{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:15;display:flex;align-items:center;gap:5px;padding:6px;background:rgba(7,16,14,.84);border:1px solid rgba(185,244,106,.16);border-radius:999px;backdrop-filter:blur(14px);box-shadow:0 18px 50px rgba(0,0,0,.35)}
+    .nav a{font:500 11px/1 "IBM Plex Mono",monospace;color:var(--muted);padding:10px 13px;border-radius:999px;transition:.2s}
+    .nav a:hover,.nav a.active{background:#172920;color:var(--lime)}
+    .nav .mail{background:var(--lime);color:#07100e;font-weight:600}
+    .hero{min-height:100svh;padding:150px 0 72px;display:grid;align-items:center;position:relative;overflow:hidden}
+    .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.14fr) minmax(330px,.86fr);gap:clamp(42px,7vw,100px);align-items:center}
+    .signal{display:inline-flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin-bottom:28px}
+    .signal i{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 5px rgba(185,244,106,.09);animation:pulse 2s infinite}
+    @keyframes pulse{50%{box-shadow:0 0 0 10px rgba(185,244,106,0)}}
+    h1{font-size:clamp(58px,9vw,124px);line-height:.84;letter-spacing:-.075em;margin:0 0 28px;font-weight:800;max-width:760px}
+    h1 span{display:block;color:transparent;-webkit-text-stroke:1px rgba(238,245,239,.45)}
+    .hero-copy>p{font-size:clamp(18px,2.1vw,27px);line-height:1.35;max-width:680px;color:#d7e3dc;margin:0 0 35px;letter-spacing:-.02em}
+    .hero-copy>p strong{color:var(--lime);font-weight:600}
+    .actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .btn{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:0 18px;border-radius:6px;border:1px solid var(--line);background:transparent;cursor:pointer;font-weight:700;font-size:13px;transition:.2s}
+    .btn.primary{background:var(--lime);border-color:var(--lime);color:#07100e}
+    .btn:hover{border-color:var(--lime);transform:translateY(-2px)}
+    .btn svg{width:16px;height:16px}
+    .lab-visual{position:relative;aspect-ratio:1/1.03;min-height:400px;border:1px solid var(--line);border-radius:3px;background:linear-gradient(145deg,rgba(99,216,232,.04),rgba(185,244,106,.035));overflow:hidden}
+    #network{position:absolute;inset:0;width:100%;height:100%}
+    .lab-visual::before{content:"";position:absolute;inset:18px;border:1px solid rgba(185,244,106,.12);z-index:2;pointer-events:none}
+    .visual-label{position:absolute;z-index:3;font:500 10px/1 "IBM Plex Mono",monospace;color:var(--muted);letter-spacing:.08em}
+    .vl-1{top:34px;left:36px}.vl-2{right:36px;bottom:34px}
+    .core{position:absolute;z-index:3;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:148px;height:148px;border-radius:50%;border:1px solid rgba(185,244,106,.52);display:grid;place-items:center;background:rgba(7,16,14,.72);box-shadow:0 0 60px rgba(185,244,106,.1)}
+    .core::before,.core::after{content:"";position:absolute;border:1px solid rgba(99,216,232,.22);border-radius:50%;inset:-26px;animation:spin 16s linear infinite}
+    .core::after{inset:-53px;border-style:dashed;animation-duration:28s;animation-direction:reverse}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .core b{font-size:38px;letter-spacing:-.06em}.core small{display:block;text-align:center;color:var(--muted);font:10px/1.3 "IBM Plex Mono";margin-top:4px}
+    .proofbar{border-bottom:1px solid var(--line);background:#08130f}
+    .proof{display:grid;grid-template-columns:repeat(3,1fr)}
+    .proof>div{padding:24px 0;border-right:1px solid var(--line)}.proof>div:not(:first-child){padding-left:30px}.proof>div:last-child{border:0}
+    .proof strong{display:block;font-size:25px;color:var(--lime);letter-spacing:-.03em}.proof span{font:11px/1.4 "IBM Plex Mono";color:var(--muted)}
+    section{padding:clamp(88px,11vw,150px) 0;border-bottom:1px solid var(--line)}
+    .section-head{display:grid;grid-template-columns:170px 1fr;gap:34px;margin-bottom:70px;align-items:start}
+    .eyebrow{font:500 11px/1.4 "IBM Plex Mono",monospace;color:var(--lime)}
+    .section-head h2{font-size:clamp(37px,5.5vw,72px);line-height:1.02;letter-spacing:-.055em;margin:0;max-width:850px}
+    .section-head h2 em{font-style:normal;color:var(--muted);font-weight:400}
+    .about-grid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(300px,.98fr);gap:clamp(40px,8vw,110px);align-items:start}
+    .about-lead{font-size:clamp(22px,3vw,39px);line-height:1.32;letter-spacing:-.035em;margin:0 0 42px;color:#e4ece7}
+    .about-lead mark{color:var(--lime);background:transparent}
+    .portrait{position:relative;max-width:440px;border:1px solid var(--line);background:var(--ink-2);padding:14px 14px 42px;overflow:hidden}
+    .portrait .pframe{position:relative;aspect-ratio:3/4;overflow:hidden;background:#0b0e0d}.portrait .pframe img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 22%;filter:saturate(.84) contrast(1.03)}
+    .portrait figcaption{position:absolute;left:16px;right:16px;bottom:13px;display:flex;justify-content:space-between;gap:16px;color:var(--muted);font:9px/1.3 "IBM Plex Mono",monospace;letter-spacing:.06em}
+    .portrait figcaption span:last-child{color:var(--lime)}
+    .about-side p{margin:0 0 26px;color:var(--muted);font-size:16px}
+    .principles{margin:35px 0 0;padding:0;list-style:none;border-top:1px solid var(--line)}
+    .principles li{display:grid;grid-template-columns:35px 1fr;padding:16px 0;border-bottom:1px solid var(--line);font-size:13px}.principles span{color:var(--lime);font-family:"IBM Plex Mono"}
+    .cap-layout{display:grid;grid-template-columns:minmax(260px,.72fr) minmax(0,1.28fr);border:1px solid var(--line);min-height:540px}
+    .cap-tabs{border-right:1px solid var(--line);padding:14px}
+    .cap-tab{width:100%;display:grid;grid-template-columns:30px 1fr auto;align-items:center;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--line);padding:19px 12px;color:var(--muted);cursor:pointer;transition:.2s;font-size:14px}
+    .cap-tab .num{font:10px "IBM Plex Mono"}.cap-tab .arrow{opacity:0}.cap-tab:hover,.cap-tab.active{color:var(--paper);background:#12231d}.cap-tab.active .num,.cap-tab.active .arrow{color:var(--lime);opacity:1}
+    .cap-panel{padding:clamp(34px,6vw,75px);display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(circle at 85% 15%,rgba(99,216,232,.06),transparent 35%)}
+    .cap-icon{width:54px;height:54px;border:1px solid var(--lime);display:grid;place-items:center;border-radius:50%;font:18px "IBM Plex Mono";color:var(--lime);margin-bottom:45px}
+    .cap-panel h3{font-size:clamp(33px,4vw,54px);line-height:1.05;letter-spacing:-.05em;margin:0 0 22px}
+    .cap-panel>div>p{font-size:18px;line-height:1.55;color:var(--muted);max-width:680px;margin:0}
+    .cap-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:45px}.tag{font:10px/1 "IBM Plex Mono";padding:9px 10px;border:1px solid var(--line);color:#c5d2cb;border-radius:3px}
+    .work-list{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+    .work-card{background:var(--ink);padding:clamp(25px,4vw,48px);display:grid;grid-template-columns:160px 1fr 220px;gap:35px;align-items:start;transition:.25s}
+    .work-card:hover{background:var(--ink-2)}
+    .work-card .meta{font:10px/1.6 "IBM Plex Mono";color:var(--muted)}.work-card .meta b{display:block;color:var(--lime);font-weight:500;margin-bottom:8px}
+    .work-card h3{font-size:clamp(24px,3vw,40px);line-height:1.12;letter-spacing:-.04em;margin:0 0 14px}.work-card p{color:var(--muted);margin:0;max-width:610px}
+    .work-card .stack{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end}.work-card .stack span{font:9px/1 "IBM Plex Mono";padding:8px;border:1px solid #20372f;color:#c3d1c9}
+    .career-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px}
+    .timeline{position:relative}.timeline::before{content:"";position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:var(--line)}
+    .role{position:relative;padding:0 0 45px 40px}.role::before{content:"";position:absolute;left:0;top:7px;width:11px;height:11px;border-radius:50%;background:var(--ink);border:2px solid var(--lime)}
+    .role time{display:block;color:var(--lime);font:10px "IBM Plex Mono";margin-bottom:8px}.role h3{font-size:21px;margin:0 0 4px;letter-spacing:-.025em}.role .company{color:var(--muted);font-size:13px}.role p{font-size:13px;color:var(--muted);margin:13px 0 0;max-width:520px}
+    .education{padding:35px;border:1px solid var(--line);align-self:start;background:var(--ink-2)}
+    .education h3{font-size:12px;font-family:"IBM Plex Mono";color:var(--lime);margin:0 0 28px}.degree{padding:22px 0;border-top:1px solid var(--line)}.degree b{display:block;font-size:18px;margin-bottom:4px}.degree span{color:var(--muted);font-size:13px}.teaching{margin-top:28px;padding-top:25px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.teaching strong{color:var(--paper)}
+    .skills{display:flex;flex-wrap:wrap;gap:9px}.skill{font-size:clamp(14px,2vw,20px);padding:13px 15px;border:1px solid var(--line);border-radius:2px;color:#d7e1dc;transition:.2s}.skill:hover{background:var(--lime);color:#07100e;border-color:var(--lime)}
+    .contact{padding-bottom:80px}
+    .contact-box{position:relative;padding:clamp(38px,7vw,90px);background:var(--lime);color:#07100e;overflow:hidden}
+    .contact-box::after{content:"@";position:absolute;right:-30px;bottom:-105px;font-size:310px;font-weight:800;opacity:.08;line-height:1}
+    .contact-box .mono{font-size:11px;position:relative;z-index:1}.contact-box h2{font-size:clamp(40px,7vw,88px);line-height:.98;letter-spacing:-.06em;max-width:850px;margin:28px 0 40px;position:relative;z-index:1}
+    .contact-actions{display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:1}.contact-box .btn{border-color:#07100e}.contact-box .btn.dark{background:#07100e;color:var(--paper)}
+    .toast{position:fixed;left:50%;bottom:25px;transform:translate(-50%,130%);z-index:40;background:var(--paper);color:#07100e;padding:11px 16px;border-radius:4px;font:11px "IBM Plex Mono";transition:.28s}.toast.show{transform:translate(-50%,0)}
+    .reveal{opacity:1;transform:none}
+    @media (max-width:850px){
+      .nav{top:auto;bottom:12px;max-width:calc(100% - 22px);overflow:hidden}.nav a{padding:10px 11px}.nav a:nth-child(3),.nav a:nth-child(4){display:none}
+      .hero{padding:110px 0 75px;min-height:auto}.hero-grid{grid-template-columns:1fr}.hero-copy{order:1}.lab-visual{order:2;min-height:0;aspect-ratio:1.35/1}.core{width:116px;height:116px}.core::after{inset:-38px}
+      .proof>div{padding:18px 10px!important}.proof strong{font-size:20px}.proof span{font-size:9px}
+      .section-head{grid-template-columns:1fr;gap:18px;margin-bottom:46px}.about-grid,.career-grid{grid-template-columns:1fr}.portrait{max-width:520px}.cap-layout{grid-template-columns:1fr}.cap-tabs{border-right:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr}.cap-tab{grid-template-columns:22px 1fr;padding:14px 9px}.cap-tab .arrow{display:none}.cap-panel{min-height:470px}.work-card{grid-template-columns:1fr;gap:18px}.work-card .stack{justify-content:flex-start}.career-grid{gap:30px}
+    }
+    @media (max-width:520px){
+      :root{--pad:20px}.nav a:nth-child(2){display:none}.nav{width:auto}.nav a{font-size:10px}
+      h1{font-size:60px}.hero-copy>p{font-size:19px}.lab-visual{aspect-ratio:1/1}.visual-label{font-size:8px}.proof{grid-template-columns:1fr}.proof>div{border-right:0;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:12px}.proof>div:last-child{border-bottom:0}
+      .cap-tabs{grid-template-columns:1fr}.cap-tab{padding:13px 10px}.cap-panel{padding:32px 24px;min-height:450px}.cap-icon{margin-bottom:30px}.contact-actions .btn{width:100%}
+    }
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.core::before,.core::after,.signal i{animation:none}.btn{transition:none}}
+  </style>
+
+  <style>
+    /* Blog-only additions, same theme tokens */
+    .post-list{display:grid;gap:26px}
+    .post-card{display:block;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:34px 36px;transition:border-color .25s, transform .25s}
+    .post-card:hover{border-color:var(--lime);transform:translateY(-3px)}
+    .post-card .meta{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:14px}
+    .post-card .date{font:500 11px/1.4 "IBM Plex Mono",monospace;color:var(--muted);letter-spacing:.08em}
+    .post-card h3{font-size:clamp(24px,3vw,36px);margin:0 0 12px}
+    .post-card p.excerpt{color:var(--muted);margin:0 0 18px;max-width:720px}
+    .tagrow{display:flex;flex-wrap:wrap;gap:8px}
+    .tag{font:500 10px/1.4 "IBM Plex Mono",monospace;color:var(--cyan);border:1px solid var(--line);border-radius:999px;padding:5px 12px;letter-spacing:.06em}
+    .empty{border:1px dashed var(--line);border-radius:14px;padding:44px;color:var(--muted);text-align:center}
+    .prose{max-width:760px}
+    .prose p{margin:0 0 1.4em;color:#dfe8e2;font-size:17px;line-height:1.75}
+    .prose h2{font-size:clamp(24px,3vw,34px);margin:2.2em 0 .7em;letter-spacing:-.03em}
+    .prose ul{color:#dfe8e2;line-height:1.75;margin:0 0 1.4em;padding-left:1.3em}
+    .prose li{margin-bottom:.5em}
+    .prose strong{color:var(--paper)}
+    .prose code{font-family:"IBM Plex Mono",monospace;background:#0b1714;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:.88em;color:var(--lime)}
+    .back{display:inline-block;margin-bottom:34px;font:500 12px/1.4 "IBM Plex Mono",monospace;color:var(--lime);text-decoration:none;letter-spacing:.06em}
+    .back:hover{text-decoration:underline}
+    .draft-banner{background:#2a1e0c;border:1px solid #6b4d1f;color:#f2c979;border-radius:10px;padding:14px 20px;font-size:14px;margin-bottom:36px}
+    .post-hero-meta{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin:18px 0 44px}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+<nav class="nav" aria-label="Page sections">
+    <a href="../index.html">Home</a><a href="../index.html#about">About</a><a href="../index.html#expertise">Expertise</a><a href="../index.html#work">Work</a><a href="../index.html#career">Career</a><a href="../blog.html" class="active" aria-current="page">Writing</a><a class="mail" href="../index.html#contact">Contact</a>
+  </nav>
+  <main id="main">
+    <section>
+      <div class="wrap">
+        <a class="back" href="../blog.html">&larr; ALL POSTS</a>
+        <div class="eyebrow">COMPUTER VISION</div>
+        <h1 style="font-size:clamp(40px,6vw,76px);line-height:.95;letter-spacing:-.06em;margin:14px 0 0;max-width:900px;font-weight:800">Converse, confirm, create: a GenAI POC for LabVantage master data</h1>
+        <div class="post-hero-meta">
+          <span class="date" style="font:500 11px/1.4 'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.08em">SEPTEMBER 2026</span>
+          <div class="tagrow"><span class="tag">GENAI</span><span class="tag">RAG</span><span class="tag">LANGCHAIN</span><span class="tag">LANGGRAPH</span><span class="tag">VECTOR DB</span><span class="tag">MCP</span><span class="tag">LABVANTAGE</span><span class="tag">MASTER DATA</span></div>
+        </div>
+        <div class="prose">
+<p>Master data is the unglamorous foundation every LIMS stands on: test methods, specifications, and the reference structures that R&D data capture depends on. Getting it wrong corrupts everything downstream; creating it in LabVantage is careful, click-heavy admin work. For a POC at Corteva, we asked a different question: what if admins could just <em>describe</em> the master data they need, in plain language, and have it built — with their explicit sign-off at every step?</p>
+<h2>The idea</h2>
+<p>We built a GenAI app that holds the context of Corteva's existing master data — test methods and related structures — and lets admins talk to it directly to create new master data for R&D data capture in LabVantage. The flow has three beats: <strong>converse, confirm, create</strong>.</p>
+<h2>Converse: grounded in what's already there</h2>
+<p>The app doesn't generate master data from vibes. It's grounded in Corteva's existing master data via retrieval — when an admin asks for a new test method, the app sees how existing test methods are structured, what conventions they follow, what fields and relationships they carry. That context is what keeps the output consistent with the organization's standards instead of inventing plausible-looking but nonconforming structures. An admin might say "I need a test method for this assay with these parameters," and the draft that comes back already speaks Corteva's dialect.</p>
+<h2>Confirm: the human stays in charge</h2>
+<p>Nothing is created from conversation alone. The app proposes the master data structure — the method definition, its parameters, its relationships — and the admin reviews it. This is the load-bearing design decision of the whole POC: <strong>GenAI drafts, humans approve</strong>. Master data errors propagate into every batch, every result, every report that references them. A hallucinated field or a misnamed method doesn't just look wrong; it poisons downstream data capture. So the confirmation step isn't a nicety, it's the control that makes the system trustworthy.</p>
+<h2>Create: APIs do the building</h2>
+<p>Once the admin confirms, the app calls <strong>LabVantage REST APIs</strong> to build the master data out — creating the real records in the LIMS, exactly as approved. The write path only ever fires after explicit human confirmation. That separation — conversational drafting on one side, API execution gated by approval on the other — is what makes the POC safe to imagine in production: the AI never gets unsupervised write access to the system of record.</p>
+<h2>Why this pattern matters</h2>
+<p>This POC is a template for GenAI in regulated lab informatics, and the template has three parts:</p>
+<ul>
+<li><strong>Ground generation in retrieved context.</strong> The existing master data is the style guide, the schema reference, and the fact-checker. RAG isn't a feature here; it's the difference between useful output and confident fiction.</li>
+<li><strong>Gate every write behind human approval.</strong> Reads can be conversational and loose; writes to the system of record must be explicit. The confirm step is a compliance control, not UX friction.</li>
+<li><strong>Let APIs be the hands.</strong> The model reasons and drafts; deterministic API calls execute. That keeps the blast radius of any model mistake at zero — the worst case is a bad draft, never a bad record.</li>
+</ul>
+<h2>Under the hood</h2>
+<p>The converse-confirm-create pattern maps cleanly onto a modern GenAI stack — the same building blocks behind the rest of my AI work:</p>
+<ul>
+<li><strong>Converse → orchestration.</strong> The multi-turn flow (gather requirements, draft, revise, confirm) is an agent workflow: stateful, branching, with the confirmation gate as an explicit node the flow cannot skip. This is the LangChain/LangGraph-shaped piece — conversation state, tool routing, and human-in-the-loop interrupts as first-class concepts.</li>
+<li><strong>Grounded → vector retrieval.</strong> Corteva's existing master data — test methods, their structures, their conventions — lives embedded in a vector database. Each turn retrieves the relevant precedents, so every draft is conditioned on how the organization already does things. The vector DB is the institutional memory; the prompt is just the query interface.</li>
+<li><strong>Create → tools, not chat.</strong> The LabVantage REST endpoints are exposed to the agent as callable tools with strict schemas — the MCP pattern. The agent can fill in the arguments, but it cannot fire the call until the human confirms. Tool-calling is what turns a chatbot into a system that <em>does</em> things, and the approval gate is what keeps that power safe.</li>
+</ul>
+<p>None of this is exotic technology. The POC's value wasn't a novel architecture — it was assembling proven pieces (orchestration, vector grounding, tool-calling with approval gates) into a shape that regulated R&D can actually trust.</p>
+<h2>Practical lessons</h2>
+<ul>
+<li><strong>Admin work is a great GenAI target.</strong> It's high-friction, high-expertise, and repetitive — exactly where conversational interfaces pay off, provided the outputs stay conformant.</li>
+<li><strong>Existing data is your best prompt engineering.</strong> Showing the model how your master data already looks beats any amount of instruction-tuning for consistency.</li>
+<li><strong>Design the approval before the automation.</strong> We scoped the confirm gate first and built the generation around it. Starting from "the AI creates records" and bolting on approval later would have produced a worse system.</li>
+<li><strong>POCs should prove the control, not just the capability.</strong> Anyone can demo a chatbot writing JSON. The thing worth proving is that it can't write anything you didn't approve.</li>
+</ul>
+<p>The Corteva POC never pretended the demo was the product — it was a proof that conversational master data creation can work inside the constraints that actually matter: consistency with existing standards, human approval on every write, and LabVantage as the system of record at the end of the chain. That's the shape of GenAI that regulated R&D can actually adopt.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
