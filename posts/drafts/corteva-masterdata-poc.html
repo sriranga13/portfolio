@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <title>Converse, confirm, create: a GenAI POC for LabVantage master data at Corteva — Sri Gorantla [DRAFT]</title>
+  <title>Converse, confirm, create: a GenAI POC for LabVantage master data at Corteva | Sri Gorantla [DRAFT]</title>
 <style>
     :root{
       --ink:#07100e; --ink-2:#0b1714; --panel:#10211c; --line:#274139;
@@ -149,46 +149,46 @@
     <section>
       <div class="wrap">
         <a class="back" href="../../blogs/">&larr; ALL POSTS</a>
-        <div class="draft-banner"><strong>DRAFT — pending Sri's approval.</strong> Not linked from the blog index. Do not publish as-is.</div>
+        <div class="draft-banner"><strong>DRAFT: pending Sri's approval.</strong> Not linked from the blog index. Do not publish as-is.</div>
         <div class="eyebrow">COMPUTER VISION</div>
         <h1 style="font-size:clamp(40px,6vw,76px);line-height:.95;letter-spacing:-.06em;margin:14px 0 0;max-width:900px;font-weight:800">Converse, confirm, create: a GenAI POC for LabVantage master data</h1>
         <div class="post-hero-meta">
-          <span class="date" style="font:500 11px/1.4 'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.08em">DRAFT — DATE ON PUBLISH</span>
+          <span class="date" style="font:500 11px/1.4 'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.08em">DRAFT: DATE ON PUBLISH</span>
           <div class="tagrow"><span class="tag">GENAI</span><span class="tag">RAG</span><span class="tag">LANGCHAIN</span><span class="tag">LANGGRAPH</span><span class="tag">VECTOR DB</span><span class="tag">MCP</span><span class="tag">LABVANTAGE</span><span class="tag">MASTER DATA</span></div>
         </div>
         <div class="prose">
-<p>Master data is the unglamorous foundation every LIMS stands on: test methods, specifications, and the reference structures that R&D data capture depends on. Getting it wrong corrupts everything downstream; creating it in LabVantage is careful, click-heavy admin work. For a POC at Corteva, we asked a different question: what if admins could just <em>describe</em> the master data they need, in plain language, and have it built — with their explicit sign-off at every step?</p>
+<p>Master data is the unglamorous foundation every LIMS stands on: test methods, specifications, and the reference structures that R&D data capture depends on. Getting it wrong corrupts everything downstream; creating it in LabVantage is careful, click-heavy admin work. For a POC at Corteva, we asked a different question: what if admins could just <em>describe</em> the master data they need, in plain language, and have it built, with their explicit sign-off at every step?</p>
 <h2>The idea</h2>
-<p>We built a GenAI app that holds the context of Corteva's existing master data — test methods and related structures — and lets admins talk to it directly to create new master data for R&D data capture in LabVantage. The flow has three beats: <strong>converse, confirm, create</strong>.</p>
+<p>We built a GenAI app that holds the context of Corteva's existing master data (test methods and related structures) and lets admins talk to it directly to create new master data for R&D data capture in LabVantage. The flow has three beats: <strong>converse, confirm, create</strong>.</p>
 <h2>Converse: grounded in what's already there</h2>
-<p>The app doesn't generate master data from vibes. It's grounded in Corteva's existing master data via retrieval — when an admin asks for a new test method, the app sees how existing test methods are structured, what conventions they follow, what fields and relationships they carry. That context is what keeps the output consistent with the organization's standards instead of inventing plausible-looking but nonconforming structures. An admin might say "I need a test method for this assay with these parameters," and the draft that comes back already speaks Corteva's dialect.</p>
+<p>The app doesn't generate master data from vibes. It's grounded in Corteva's existing master data via retrieval, when an admin asks for a new test method, the app sees how existing test methods are structured, what conventions they follow, what fields and relationships they carry. That context is what keeps the output consistent with the organization's standards instead of inventing plausible-looking but nonconforming structures. An admin might say "I need a test method for this assay with these parameters," and the draft that comes back already speaks Corteva's dialect.</p>
 <h2>Confirm: the human stays in charge</h2>
-<p>Nothing is created from conversation alone. The app proposes the master data structure — the method definition, its parameters, its relationships — and the admin reviews it. This is the load-bearing design decision of the whole POC: <strong>GenAI drafts, humans approve</strong>. Master data errors propagate into every batch, every result, every report that references them. A hallucinated field or a misnamed method doesn't just look wrong; it poisons downstream data capture. So the confirmation step isn't a nicety, it's the control that makes the system trustworthy.</p>
+<p>Nothing is created from conversation alone. The app proposes the master data structure (the method definition, its parameters, its relationships), and the admin reviews it. This is the load-bearing design decision of the whole POC: <strong>GenAI drafts, humans approve</strong>. Master data errors propagate into every batch, every result, every report that references them. A hallucinated field or a misnamed method doesn't just look wrong; it poisons downstream data capture. So the confirmation step isn't a nicety, it's the control that makes the system trustworthy.</p>
 <h2>Create: APIs do the building</h2>
-<p>Once the admin confirms, the app calls <strong>LabVantage REST APIs</strong> to build the master data out — creating the real records in the LIMS, exactly as approved. The write path only ever fires after explicit human confirmation. That separation — conversational drafting on one side, API execution gated by approval on the other — is what makes the POC safe to imagine in production: the AI never gets unsupervised write access to the system of record.</p>
+<p>Once the admin confirms, the app calls <strong>LabVantage REST APIs</strong> to build the master data out, creating the real records in the LIMS, exactly as approved. The write path only ever fires after explicit human confirmation. That separation (conversational drafting on one side, API execution gated by approval on the other) is what makes the POC safe to imagine in production: the AI never gets unsupervised write access to the system of record.</p>
 <h2>Why this pattern matters</h2>
 <p>This POC is a template for GenAI in regulated lab informatics, and the template has three parts:</p>
 <ul>
 <li><strong>Ground generation in retrieved context.</strong> The existing master data is the style guide, the schema reference, and the fact-checker. RAG isn't a feature here; it's the difference between useful output and confident fiction.</li>
 <li><strong>Gate every write behind human approval.</strong> Reads can be conversational and loose; writes to the system of record must be explicit. The confirm step is a compliance control, not UX friction.</li>
-<li><strong>Let APIs be the hands.</strong> The model reasons and drafts; deterministic API calls execute. That keeps the blast radius of any model mistake at zero — the worst case is a bad draft, never a bad record.</li>
+<li><strong>Let APIs be the hands.</strong> The model reasons and drafts; deterministic API calls execute. That keeps the blast radius of any model mistake at zero: the worst case is a bad draft, never a bad record.</li>
 </ul>
 <h2>Under the hood</h2>
-<p>The converse-confirm-create pattern maps cleanly onto a modern GenAI stack — the same building blocks behind the rest of my AI work:</p>
+<p>The converse-confirm-create pattern maps cleanly onto a modern GenAI stack: the same building blocks behind the rest of my AI work:</p>
 <ul>
-<li><strong>Converse → orchestration.</strong> The multi-turn flow (gather requirements, draft, revise, confirm) is an agent workflow: stateful, branching, with the confirmation gate as an explicit node the flow cannot skip. This is the LangChain/LangGraph-shaped piece — conversation state, tool routing, and human-in-the-loop interrupts as first-class concepts.</li>
-<li><strong>Grounded → vector retrieval.</strong> Corteva's existing master data — test methods, their structures, their conventions — lives embedded in a vector database. Each turn retrieves the relevant precedents, so every draft is conditioned on how the organization already does things. The vector DB is the institutional memory; the prompt is just the query interface.</li>
-<li><strong>Create → tools, not chat.</strong> The LabVantage REST endpoints are exposed to the agent as callable tools with strict schemas — the MCP pattern. The agent can fill in the arguments, but it cannot fire the call until the human confirms. Tool-calling is what turns a chatbot into a system that <em>does</em> things, and the approval gate is what keeps that power safe.</li>
+<li><strong>Converse → orchestration.</strong> The multi-turn flow (gather requirements, draft, revise, confirm) is an agent workflow: stateful, branching, with the confirmation gate as an explicit node the flow cannot skip. This is the LangChain/LangGraph-shaped piece: conversation state, tool routing, and human-in-the-loop interrupts as first-class concepts.</li>
+<li><strong>Grounded → vector retrieval.</strong> Corteva's existing master data (test methods, their structures, their conventions) lives embedded in a vector database. Each turn retrieves the relevant precedents, so every draft is conditioned on how the organization already does things. The vector DB is the institutional memory; the prompt is just the query interface.</li>
+<li><strong>Create → tools, not chat.</strong> The LabVantage REST endpoints are exposed to the agent as callable tools with strict schemas, the MCP pattern. The agent can fill in the arguments, but it cannot fire the call until the human confirms. Tool-calling is what turns a chatbot into a system that <em>does</em> things, and the approval gate is what keeps that power safe.</li>
 </ul>
-<p>None of this is exotic technology. The POC's value wasn't a novel architecture — it was assembling proven pieces (orchestration, vector grounding, tool-calling with approval gates) into a shape that regulated R&D can actually trust.</p>
+<p>None of this is exotic technology. The POC's value wasn't a novel architecture; it was assembling proven pieces (orchestration, vector grounding, tool-calling with approval gates) into a shape that regulated R&D can actually trust.</p>
 <h2>Practical lessons</h2>
 <ul>
-<li><strong>Admin work is a great GenAI target.</strong> It's high-friction, high-expertise, and repetitive — exactly where conversational interfaces pay off, provided the outputs stay conformant.</li>
+<li><strong>Admin work is a great GenAI target.</strong> It's high-friction, high-expertise, and repetitive, exactly where conversational interfaces pay off, provided the outputs stay conformant.</li>
 <li><strong>Existing data is your best prompt engineering.</strong> Showing the model how your master data already looks beats any amount of instruction-tuning for consistency.</li>
 <li><strong>Design the approval before the automation.</strong> We scoped the confirm gate first and built the generation around it. Starting from "the AI creates records" and bolting on approval later would have produced a worse system.</li>
 <li><strong>POCs should prove the control, not just the capability.</strong> Anyone can demo a chatbot writing JSON. The thing worth proving is that it can't write anything you didn't approve.</li>
 </ul>
-<p>The Corteva POC never pretended the demo was the product — it was a proof that conversational master data creation can work inside the constraints that actually matter: consistency with existing standards, human approval on every write, and LabVantage as the system of record at the end of the chain. That's the shape of GenAI that regulated R&D can actually adopt.</p>
+<p>The Corteva POC never pretended the demo was the product; it was a proof that conversational master data creation can work inside the constraints that actually matter: consistency with existing standards, human approval on every write, and LabVantage as the system of record at the end of the chain. That's the shape of GenAI that regulated R&D can actually adopt.</p>
         </div>
       </div>
     </section>

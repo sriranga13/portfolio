@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <title>Building Genie: an enterprise GenAI platform for regulated R&D — Sri Gorantla</title>
+  <title>Building Genie: an enterprise GenAI platform for regulated R&D | Sri Gorantla</title>
 <style>
     :root{
       --ink:#07100e; --ink-2:#0b1714; --panel:#10211c; --line:#274139;
@@ -157,16 +157,16 @@
         </div>
         <div class="prose">
 <p>Scientists at a biotech company sit on top of a goldmine: years of experimental data, regulatory filings, QC records, and process knowledge spread across databases that only a handful of specialists know how to query. Everyone else files a ticket, waits, and eventually makes a decision with half the picture. I kept running into this wall, so we built something to tear it down: <strong>Genie</strong>, an enterprise GenAI platform that lets regulatory, QC, and R&amp;D teams ask questions in plain English and get answers grounded in the company's own scientific databases.</p>
-<p>This post is about what it actually took to build that — and why the hard parts had almost nothing to do with the language model.</p>
+<p>This post is about what it actually took to build that, and why the hard parts had almost nothing to do with the language model.</p>
 <h2>The problem with "just ask the chatbot"</h2>
 <p>In a regulated environment, a fluent wrong answer is worse than no answer. A scientist asking about a formulation's stability history or a regulatory colleague pulling submission-relevant data cannot afford a hallucination dressed up as confidence. So the central design decision for Genie was this: <strong>the LLM is the interface, not the source of truth</strong>. Every answer has to be traceable back to a query against a real database, and the user needs to see that provenance.</p>
-<p>That framing shaped everything downstream. We weren't building a chatbot with a database plugged in; we were building a natural-language query layer over scientific data, where the model translates intent into structured retrieval and then synthesizes — never invents.</p>
+<p>That framing shaped everything downstream. We weren't building a chatbot with a database plugged in; we were building a natural-language query layer over scientific data, where the model translates intent into structured retrieval and then synthesizes. It never invents.</p>
 <h2>Grounding answers in scientific databases</h2>
 <p>The backbone is retrieval over the company's scientific databases: experimental results, batch and formulation records, QC data, and regulatory documentation. Natural-language querying sounds magical until you watch a model try to join three domain tables it has never seen. Getting this right meant careful work on schema description, giving the model an accurate map of what lives where, and constraining it to generate queries against that map rather than freelancing.</p>
-<p>Prompt engineering turned out to be genuine engineering here, not vibes. We iterated on system prompts the way you'd iterate on code: versioned, tested against a set of representative questions, and reviewed when answers drifted. The prompts encode domain rules — which sources to prefer, how to say "I don't know" instead of guessing, and how to present uncertainty. In a regulated setting, a well-engineered refusal is a feature.</p>
+<p>Prompt engineering turned out to be genuine engineering here, not vibes. We iterated on system prompts the way you'd iterate on code: versioned, tested against a set of representative questions, and reviewed when answers drifted. The prompts encode domain rules: which sources to prefer, how to say "I don't know" instead of guessing, and how to present uncertainty. In a regulated setting, a well-engineered refusal is a feature.</p>
 <h2>MCP servers: giving the model hands, not just eyes</h2>
-<p>Retrieval covers "what does the data say," but R&amp;D workflows need actions: look up a manufacturing record, check a formulation's component history, pull discovery-stage assay context. That's where <strong>MCP servers</strong> came in. We built MCP servers for manufacturing, formulations, and discovery — each exposing a curated set of tools the model can call — and surfaced them through <strong>LibreChat</strong> as the conversational front end.</p>
-<p>I like the MCP approach for a practical reason: it draws a clean boundary. The model reasons in language; the tools execute deterministic operations against systems of record. The tool definitions become a contract you can validate, version, and audit — which matters enormously when quality and regulatory teams ask "exactly what did the system touch to produce this answer?" LibreChat gave us an open, extensible chat interface without building a whole frontend framework from scratch, so the team could focus on the tools and the grounding instead of UI plumbing.</p>
+<p>Retrieval covers "what does the data say," but R&amp;D workflows need actions: look up a manufacturing record, check a formulation's component history, pull discovery-stage assay context. That's where <strong>MCP servers</strong> came in. We built MCP servers for manufacturing, formulations, and discovery (each exposing a curated set of tools the model can call), and surfaced them through <strong>LibreChat</strong> as the conversational front end.</p>
+<p>I like the MCP approach for a practical reason: it draws a clean boundary. The model reasons in language; the tools execute deterministic operations against systems of record. The tool definitions become a contract you can validate, version, and audit, which matters enormously when quality and regulatory teams ask "exactly what did the system touch to produce this answer?" LibreChat gave us an open, extensible chat interface without building a whole frontend framework from scratch, so the team could focus on the tools and the grounding instead of UI plumbing.</p>
 <h2>What I'd tell anyone building this</h2>
 <ul>
 <li><strong>Start with the refusal.</strong> Design how the system says "I can't answer that from available data" before you design anything else. In regulated R&amp;D, trust is the product.</li>
@@ -174,7 +174,7 @@
 <li><strong>Keep humans in the loop where it counts.</strong> Genie accelerates research and QC investigation; it doesn't sign off on anything. That boundary should be explicit in the product, not just the documentation.</li>
 <li><strong>Tools beat context.</strong> An MCP tool that runs the right query will outperform a giant context window stuffed with hopefully-relevant documents, every time.</li>
 </ul>
-<p>Genie changed how quickly teams at Greenlight could go from question to evidence. The lesson I keep coming back to: enterprise GenAI in a regulated industry isn't a model problem, it's a <em>trust architecture</em> problem — provenance, boundaries, and honest uncertainty, with the LLM as the friendly face on top of rigorous machinery.</p>
+<p>Genie changed how quickly teams at Greenlight could go from question to evidence. The lesson I keep coming back to: enterprise GenAI in a regulated industry isn't a model problem, it's a <em>trust architecture</em> problem: provenance, boundaries, and honest uncertainty, with the LLM as the friendly face on top of rigorous machinery.</p>
         </div>
       </div>
     </section>
